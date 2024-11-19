@@ -48,6 +48,10 @@ def main():
 					asteroid.split(screen)
 					shot.kill()
 
+		for coin in coins:
+			if coin.collides_with(player):
+				coin.kill()
+
 		screen.fill("black")
 
 		for object in drawable:

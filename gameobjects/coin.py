@@ -9,7 +9,10 @@ class Coin(pygame.sprite.Sprite):
         self._value = 1
         self._position = position
         self._color = (255, 255, 0)
+        self._radius = 10
 
     def draw(self, screen):
-        print(f"coin drawn at pos: {self._position}, screen{screen}")
-        pygame.draw.circle(screen, self._color, (self._position[0], self._position[1]), 10)
+        pygame.draw.circle(screen, self._color, (self._position[0], self._position[1]), self._radius)
+
+    def collides_with(self, other):
+        return self.position.distance_to(other.position) <= self._radius + other.radius
