@@ -1,14 +1,16 @@
 import sys
 import pygame
-from constants import *
 from gameobjects.player import Player
 from gameobjects.asteroid import Asteroid
 from gameobjects.asteroidfield import AsteroidField
 from gameobjects.shot import Shot
 from gameobjects.coin import Coin
+from coincounter import CoinCounter
+
+pygame.init()
+from constants import *
 
 def main():
-	pygame.init()
 	screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 	clock = pygame.time.Clock()
 
@@ -17,12 +19,15 @@ def main():
 	asteroids = pygame.sprite.Group()
 	shots = pygame.sprite.Group()
 	coins = pygame.sprite.Group()
+	coinCoint = pygame.sprite.Group()
 
 	Asteroid.containers = (asteroids, updatable, drawable)
 	Shot.containers = (shots, updatable, drawable)
 	AsteroidField.containers = updatable
 	Coin.containers = (coins, drawable)
+	CoinCounter.containers = (updatable, drawable)
 	asteroid_field = AsteroidField()
+	coin_count = CoinCounter()
 
 	Player.containers = (updatable, drawable)
 
@@ -49,7 +54,8 @@ def main():
 					shot.kill()
 
 		for coin in coins:
-			if coin.collides_with(player):
+			if player.collides_with(coin):
+				coin_count.add_value(coin)
 				coin.kill()
 
 		screen.fill("black")

@@ -15,4 +15,4 @@ class Coin(pygame.sprite.Sprite):
         pygame.draw.circle(screen, self._color, (self._position[0], self._position[1]), self._radius)
 
     def collides_with(self, other):
-        return self.position.distance_to(other.position) <= self._radius + other.radius
+        return self._position.distance_to(other.position) <= self._radius + other.radius
