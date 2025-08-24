@@ -7,7 +7,15 @@ class Player(CircleShape):
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
-        self.shoot_cd = 0
+        self.shoot_cd = 0.3
+        self.health = 10
+        self.shoot_cd_timer = 0
+
+        self.invincible_period_time = 0.5
+        self.invincible_timer = 0
+        self.invincible = False
+
+        self.color = (255, 255, 255)
 
     # in the player class
     def triangle(self):
@@ -18,8 +26,28 @@ class Player(CircleShape):
         c = self.position - forward * self.radius + right
         return [a, b, c]
     
+    def get_hit(self, damage: float):
+        if not self.invincible:
+            self.health -= damage
+            self.handle_invincible(switch=True)
+
+    def handle_invincible(self, switch):
+        if switch == False:
+            self.invincible = False
+            self.color = (255, 255, 255)
+        else:
+            self.invincible = True
+            self.invincible_timer = self.invincible_period_time
+            self.color = (255, 0, 0)
+        
+    def check_for_dead(self) -> bool:
+        if self.health <= 0:
+            return True # dead
+        else:
+            return False # alive
+    
     def draw(self, screen):
-        pygame.draw.polygon(surface=screen, color=(255, 255, 255), points=self.triangle(), width=2)
+        pygame.draw.polygon(surface=screen, color=self.color, points=self.triangle(), width=2)
 
     def rotate(self, dt):
         self.rotation += PLAYER_TURN_SPEED * dt
@@ -30,6 +58,10 @@ class Player(CircleShape):
 
     def update(self, dt):
         keys = pygame.key.get_pressed()
+        if self.invincible_timer > 0:
+            self.invincible_timer -= dt
+            if self.invincible_timer <= 0:
+                self.handle_invincible(switch=False)
 
         if keys[pygame.K_a]:
             self.rotate(-dt)
@@ -43,8 +75,8 @@ class Player(CircleShape):
             self.shoot(dt)
 
     def shoot(self, dt):
-        self.shoot_cd -= dt
-        if self.shoot_cd <= 0:
+        self.shoot_cd_timer -= dt
+        if self.shoot_cd_timer <= 0:
             bullet = Shot(self.position[0], self.position[1])
             bullet.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
-            self.shoot_cd = PLAYER_SHOOT_CD
+            self.shoot_cd_timer = self.shoot_cd

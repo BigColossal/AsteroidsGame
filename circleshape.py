@@ -26,4 +26,8 @@ class CircleShape(pygame.sprite.Sprite):
         if distance <= self.radius + obj.radius:
             return True
         return False
-        
+    
+    def check_in_bounds(self):
+        x, y = self.position[0], self.position[1]
+        if x < 0: # Check for Left Border
+            pass

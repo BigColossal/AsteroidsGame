@@ -22,7 +22,7 @@ def main():
     Player.containers = (updatable, drawable)
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     asteroid_field = AsteroidField()
-    print(player.position)
+
 
     while running:
         updatable.update(dt)
@@ -32,9 +32,11 @@ def main():
                     asteroid.split()
                     bullet.kill()
             if asteroid.check_collide(player):
-                print("Game Over!")
-                running = False
-                exit()
+                player.get_hit(asteroid.damage)
+                if player.check_for_dead():
+                    print("Game over!")
+                    exit()
+
         screen.fill((0, 0, 0))
         for sprite in drawable:
             sprite.draw(screen)
