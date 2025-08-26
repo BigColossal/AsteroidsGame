@@ -29,7 +29,7 @@ def main():
         for asteroid in asteroids:
             for bullet in shots:
                 if asteroid.check_collide(bullet):
-                    asteroid.split()
+                    asteroid.get_hit(player.damage)
                     bullet.kill()
             if asteroid.check_collide(player):
                 player.get_hit(asteroid.damage)

@@ -5,9 +5,11 @@ import random
 
 class Asteroid(CircleShape):
 
-    def __init__(self, x, y, radius):
+    def __init__(self, x, y, radius, kind):
         super().__init__(x, y, radius)
+        self.kind = kind
         self.damage = 1
+        self.health = self.get_health()
 
     def draw(self, screen):
         pygame.draw.circle(screen, (155, 155, 255), self.position, self.radius, width=2)
@@ -24,7 +26,17 @@ class Asteroid(CircleShape):
             vector1, vector2 = self.velocity.rotate(angle), self.velocity.rotate(-angle)
             new_radius = self.radius - ASTEROID_MIN_RADIUS
             x, y = self.position[0], self.position[1]
-            asteroid1, asteroid2 = Asteroid(x, y, new_radius), Asteroid(x, y, new_radius)
+            asteroid1, asteroid2 = Asteroid(x, y, new_radius, self.kind - 1), Asteroid(x, y, new_radius, self.kind - 1)
             asteroid1.velocity = vector1 * 1.2
-            asteroid2.velocity  = vector2 * 1.2
-            
+            asteroid2.velocity  = vector2 * 1.2       
+
+    def get_health(self):
+        if self.kind == 1:
+            return 1
+        else:
+            return 2 * (self.kind - 1)
+        
+    def get_hit(self, damage):
+        self.health -= damage
+        if self.health <= 0:
+            self.split()

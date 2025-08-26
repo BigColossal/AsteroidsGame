@@ -10,12 +10,14 @@ class Player(CircleShape):
         self.shoot_cd = 0.3
         self.health = 10
         self.shoot_cd_timer = 0
+        self.damage = 1
 
         self.invincible_period_time = 0.5
         self.invincible_timer = 0
         self.invincible = False
 
         self.color = (255, 255, 255)
+        self.knockback = 100
 
     # in the player class
     def triangle(self):
