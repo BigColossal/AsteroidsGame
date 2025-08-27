@@ -9,13 +9,24 @@ class Asteroid(CircleShape):
         super().__init__(x, y, radius)
         self.kind = kind
         self.damage = 1
-        self.health = self.get_health()
+        self.max_health = self.get_health()
+        self.health = self.max_health
+        self.hit = False
+        self.hit_visual_cd = 0.3
+        self.hit_visual_timer = 0
+        self.og_color = (255, 255, 255)
+        self.color = self.og_color
 
     def draw(self, screen):
-        pygame.draw.circle(screen, (155, 155, 255), self.position, self.radius, width=2)
+        pygame.draw.circle(screen, self.color, self.position, self.radius, width=2)
 
     def update(self, dt):
         self.position += self.velocity * dt
+        if self.hit:
+            self.hit_visual_timer -= dt
+            if self.hit_visual_timer <= 0:
+                self.hit = False
+                self.color = self.og_color
 
     def split(self):
         self.kill()
@@ -37,6 +48,10 @@ class Asteroid(CircleShape):
             return 2 * (self.kind - 1)
         
     def get_hit(self, damage):
+        self.hit = True
+        self.hit_visual_timer = self.hit_visual_cd
+        self.color = (255, 0, 0)
+
         self.health -= damage
         if self.health <= 0:
             self.split()

@@ -8,7 +8,8 @@ class Player(CircleShape):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
         self.shoot_cd = 0.3
-        self.health = 10
+        self.max_health = 10
+        self.health = self.max_health
         self.shoot_cd_timer = 0
         self.damage = 1
 
