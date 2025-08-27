@@ -5,7 +5,7 @@ import random
 
 class Asteroid(CircleShape):
 
-    def __init__(self, x, y, radius, kind):
+    def __init__(self, x, y, radius, kind, color=None):
         super().__init__(x, y, radius)
         self.kind = kind
         self.damage = 1
@@ -14,8 +14,24 @@ class Asteroid(CircleShape):
         self.hit = False
         self.hit_visual_cd = 0.3
         self.hit_visual_timer = 0
-        self.og_color = (255, 255, 255)
+        if color:
+            self.og_color = color
+        else:
+            self.og_color = self.select_random_color()
         self.color = self.og_color
+
+    def select_random_color(self):
+        import random
+        color_selection = [#(255, 200, 200), # Red
+                           #(255, 200, 100), # Orange
+                           (255, 255, 200), # yellow
+                           #(200, 255, 200), # Green
+                           #(180, 220, 255), # Blue
+                           #(200, 175, 255), # Violet
+                           ]
+        
+        return random.choice(color_selection)
+        
 
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, self.position, self.radius, width=2)
@@ -33,11 +49,17 @@ class Asteroid(CircleShape):
         if self.radius <= ASTEROID_MIN_RADIUS:
             return
         else:
-            angle = random.uniform(20, 50)
+            angle = 45
             vector1, vector2 = self.velocity.rotate(angle), self.velocity.rotate(-angle)
             new_radius = self.radius - ASTEROID_MIN_RADIUS
-            x, y = self.position[0], self.position[1]
-            asteroid1, asteroid2 = Asteroid(x, y, new_radius, self.kind - 1), Asteroid(x, y, new_radius, self.kind - 1)
+            offset_distance = new_radius * 1.5
+            
+            pos1 = self.position + vector1.normalize() * offset_distance
+            pos2 = self.position + vector2.normalize() * offset_distance
+
+            asteroid1 = Asteroid(pos1.x, pos1.y, new_radius, self.kind - 1, self.og_color)
+            asteroid2 = Asteroid(pos2.x, pos2.y, new_radius, self.kind - 1, self.og_color)
+
             asteroid1.velocity = vector1 * 1.2
             asteroid2.velocity  = vector2 * 1.2       
 

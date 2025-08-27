@@ -5,6 +5,7 @@ from asteroids import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
 from healthbar import Healthbar
+from physics import resolve_collision, push_apart
 
 def main():
     pygame.init()
@@ -29,6 +30,15 @@ def main():
 
     while running:
         updatable.update(dt)
+        asteroid_list = list(asteroids)
+        for i in range(len(asteroid_list)):
+            a1 = asteroid_list[i]
+            for j in range(i + 1, len(asteroid_list)):
+                a2 = asteroid_list[j]
+                if a1.check_collide(a2):
+                    resolve_collision(a1, a2)
+                    push_apart(a1, a2)
+
         for asteroid in asteroids:
             for bullet in shots:
                 if asteroid.check_collide(bullet):
